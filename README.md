@@ -1,7 +1,7 @@
 The program retrieves the data from basketball-reference.com for a specified player, returning his performance in the last 5 games.
 The data is stored in pandas dataframe, and then pushed to mysql database. All of the players have dedicated tables created dynamically from the script level.
 
-To use the script, first edit the engine variable in insertplayer.py, then run it through terminal of your choice. For powershell it's:
+To use the script, first run createdb.py script to create players database that will be our main place for data storage. The script assumes that your MySQL runs on localhost. Remember to edit username and passwrd variables with your data. Then, fill the same variables in insertplayer.py so the engine runs as it should. Now the script is ready to run through terminal of your choice. For powershell it's:
 py main.py 'Player Name'
 
 Plans for the future:
