@@ -27,14 +27,29 @@ def insert_player(player_name):
 
     # insert values to the player_ids table
     with engine.connect() as conn:
-        try:
-            insert = player_ids.insert().values(player=player_name)
-            result = conn.execute(insert)
-            print('Player ID and player inserted.')
-            conn.commit()
-            player_id = result.inserted_primary_key[0] 
-        except SQLAlchemyError as e:
-            print(f"Error: {e}")
+        # check if a player instance already exists in the player_ids table
+        query = text("SELECT player FROM player_ids")
+        execution = conn.execute(query)
+        result = execution.fetchall()
+
+        players_list = []
+
+        for player in result:
+            players_list.append(player[0])
+        
+        # if not, add the player
+        if player_name not in players_list:
+            try:
+                insert = player_ids.insert().values(player=player_name)
+                result = conn.execute(insert)
+                print('Player ID and player inserted.')
+                conn.commit()
+                player_id = result.inserted_primary_key[0] 
+            except SQLAlchemyError as e:
+                print(f"Error: {e}")
+                return
+        else:
+            print(f"{player_name} already has his ID.")
             return
 
         # create corresponding player table
