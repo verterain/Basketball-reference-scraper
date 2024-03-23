@@ -8,7 +8,7 @@ def get_last5_data(player_name):
     initial = name_abbrev[0].lower()
     # Fetch the url & HTML content
     url = f"https://www.basketball-reference.com/players/{initial}/{name_abbrev}.html"
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)
     # Parse the HTML content and extract the 'Last 5 games table'
     soup = BeautifulSoup(response.text, 'html.parser')
     table = soup.find('table', id='last5')
@@ -16,6 +16,7 @@ def get_last5_data(player_name):
     try: 
         # Get headers for the dataframe
         headers = [th.get_text() for th in table.find_all('th', scope='col')]
+        headers[2] = 'At/Vs'
         # Extract the data for the table's rows and columns
         rows = table.find_all('tr')[1:6]
         data = []
@@ -32,7 +33,6 @@ def get_last5_data(player_name):
             data.append(row_data)
             # Create & return the df
             df = pd.DataFrame(data, columns=headers)
-            df.columns.values[2] = 'At/Vs'
         return df
     except Exception as e:
         print(f"No data for player by the name {player_name} available")
